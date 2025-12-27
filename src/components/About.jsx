@@ -110,69 +110,6 @@ const About = () => {
           </div>
         </div>
 
-        {/* Technology Stack */}
-        <div className="card border-gray-200 dark:border-gray-800 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
-            Technology Stack
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="text-gray-700 dark:text-gray-300 font-light">
-              <strong className="text-gray-900 dark:text-white">React 18</strong> - Modern UI library
-            </div>
-            <div className="text-gray-700 dark:text-gray-300 font-light">
-              <strong className="text-gray-900 dark:text-white">Vite</strong> - Fast build tool and dev server
-            </div>
-            <div className="text-gray-700 dark:text-gray-300 font-light">
-              <strong className="text-gray-900 dark:text-white">Tailwind CSS</strong> - Utility-first CSS framework
-            </div>
-            <div className="text-gray-700 dark:text-gray-300 font-light">
-              <strong className="text-gray-900 dark:text-white">React Router</strong> - Client-side routing
-            </div>
-            <div className="text-gray-700 dark:text-gray-300 font-light">
-              <strong className="text-gray-900 dark:text-white">Axios</strong> - HTTP client for API calls
-            </div>
-            <div className="text-gray-700 dark:text-gray-300 font-light">
-              <strong className="text-gray-900 dark:text-white">Lucide React</strong> - Beautiful icon library
-            </div>
-          </div>
-        </div>
-
-        {/* Contributing */}
-        <div className="card border-gray-200 dark:border-gray-800 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
-            Contributing
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 font-light mb-4">
-            We welcome contributions from developers and investors! Here's how you can help:
-          </p>
-          <div className="space-y-3">
-            <div className="flex items-start">
-              <Code className="h-4 w-4 text-gray-900 dark:text-white mr-2 mt-1 flex-shrink-0" />
-              <span className="text-gray-700 dark:text-gray-300 font-light text-sm">
-                Code Contributions: Help build and improve our tools
-              </span>
-            </div>
-            <div className="flex items-start">
-              <Shield className="h-4 w-4 text-gray-900 dark:text-white mr-2 mt-1 flex-shrink-0" />
-              <span className="text-gray-700 dark:text-gray-300 font-light text-sm">
-                Bug Reports: Report issues and help us improve stability
-              </span>
-            </div>
-            <div className="flex items-start">
-              <Rocket className="h-4 w-4 text-gray-900 dark:text-white mr-2 mt-1 flex-shrink-0" />
-              <span className="text-gray-700 dark:text-gray-300 font-light text-sm">
-                Feature Requests: Suggest new tools or enhancements
-              </span>
-            </div>
-            <div className="flex items-start">
-              <Users className="h-4 w-4 text-gray-900 dark:text-white mr-2 mt-1 flex-shrink-0" />
-              <span className="text-gray-700 dark:text-gray-300 font-light text-sm">
-                User Testing: Try our tools and provide feedback
-              </span>
-            </div>
-          </div>
-        </div>
-
         {/* Why ETFs Section */}
         <div className="card border-gray-200 dark:border-gray-800 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight flex items-center">
@@ -494,17 +431,6 @@ const About = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* License */}
-        <div className="card border-gray-200 dark:border-gray-800 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
-            License
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 font-light">
-            All Turing Investor tools are released under the <strong className="text-gray-900 dark:text-white">MIT License</strong>. 
-            Feel free to use, modify, and distribute our code.
-          </p>
         </div>
 
         {/* Back to Home */}
