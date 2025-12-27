@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Search, TrendingUp, DollarSign, PieChart, Info, Loader2, X, RotateCcw } from 'lucide-react'
+import { Search, TrendingUp, DollarSign, PieChart, Info, Loader2, X, RotateCcw, Calendar } from 'lucide-react'
 import { searchETFs, getETFData } from '../services/api'
 
 const STORAGE_KEY = 'etf_comparator_state'
@@ -111,9 +111,17 @@ const ETFComparator = () => {
     return `${(er * 100).toFixed(3)}%`
   }
 
-  const formatDividendYield = (yieldValue) => {
-    if (yieldValue === null || yieldValue === undefined) return 'N/A'
-    return `${(yieldValue * 100).toFixed(2)}%`
+  // Get most recent dividend - use the latest dividend from recent_dividends
+  const getMostRecentDividend = (dividendInfo) => {
+    // Use the most recent dividend from recent_dividends array
+    // This is the most accurate and up-to-date dividend information
+    if (dividendInfo?.recent_dividends && Array.isArray(dividendInfo.recent_dividends) && dividendInfo.recent_dividends.length > 0) {
+      const mostRecent = dividendInfo.recent_dividends[0]
+      if (mostRecent?.amount && mostRecent.amount > 0) {
+        return mostRecent.amount
+      }
+    }
+    return null
   }
 
   return (
@@ -223,9 +231,6 @@ const ETFComparator = () => {
                       Expense Ratio
                     </th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">
-                      Dividend Yield
-                    </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">
                       Actions
                     </th>
                   </tr>
@@ -235,8 +240,6 @@ const ETFComparator = () => {
                     const data = etf.data
                     // Expense ratio is at top level, not in fund_operations
                     const expenseRatio = data?.expense_ratio || data?.fund_operations?.expense_ratio
-                    // Use trailing_annual_dividend_yield as it's more accurate than dividend_yield
-                    const dividendYield = data?.dividend_info?.trailing_annual_dividend_yield || data?.dividend_info?.dividend_yield
                     
                     return (
                       <tr
@@ -251,9 +254,6 @@ const ETFComparator = () => {
                         </td>
                         <td className="py-4 px-4 text-gray-700 dark:text-gray-300">
                           {formatExpenseRatio(expenseRatio)}
-                        </td>
-                        <td className="py-4 px-4 text-gray-700 dark:text-gray-300">
-                          {formatDividendYield(dividendYield)}
                         </td>
                         <td className="py-4 px-4">
                           <button
@@ -278,6 +278,7 @@ const ETFComparator = () => {
                 const holdings = data?.top_holdings?.slice(0, 10) || data?.holdings?.slice(0, 10) || []
                 const sectors = data?.sector_weightings || {}
                 const dividendInfo = data?.dividend_info || {}
+                const mostRecentDividend = getMostRecentDividend(dividendInfo)
                 
                 return (
                   <div key={etf.symbol} className="card border-gray-200 dark:border-gray-800">
@@ -304,22 +305,14 @@ const ETFComparator = () => {
                           {formatExpenseRatio(data?.expense_ratio || data?.fund_operations?.expense_ratio)}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600 dark:text-gray-400 flex items-center">
-                          <TrendingUp className="h-4 w-4 mr-2" />
-                          Dividend Yield
-                        </span>
-                        <span className="font-semibold text-gray-900 dark:text-white">
-                          {formatDividendYield(dividendInfo.trailing_annual_dividend_yield || dividendInfo.dividend_yield)}
-                        </span>
-                      </div>
-                      {dividendInfo.trailing_annual_dividend_rate && (
+                      {mostRecentDividend && mostRecentDividend > 0 && (
                         <div className="flex items-center justify-between">
-                          <span className="text-gray-600 dark:text-gray-400">
-                            Annual Dividend Rate
+                          <span className="text-gray-600 dark:text-gray-400 flex items-center">
+                            <TrendingUp className="h-4 w-4 mr-2" />
+                            Last Paid Out Dividend per Share
                           </span>
                           <span className="font-semibold text-gray-900 dark:text-white">
-                            ${dividendInfo.trailing_annual_dividend_rate.toFixed(2)}
+                            ${mostRecentDividend.toFixed(3)}
                           </span>
                         </div>
                       )}
@@ -352,7 +345,7 @@ const ETFComparator = () => {
 
                     {/* Sector Weightings */}
                     {Object.keys(sectors).length > 0 && (
-                      <div>
+                      <div className="mb-6">
                         <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
                           <Info className="h-4 w-4 mr-2" />
                           Sector Allocation
@@ -369,6 +362,38 @@ const ETFComparator = () => {
                               </span>
                             </div>
                           ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Recent Dividend History */}
+                    {dividendInfo?.recent_dividends && Array.isArray(dividendInfo.recent_dividends) && dividendInfo.recent_dividends.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          Recent Dividends
+                        </h4>
+                        <div className="space-y-1">
+                          {dividendInfo.recent_dividends.slice(0, 4).map((dividend, idx) => {
+                            const date = dividend.date ? new Date(dividend.date) : null
+                            const formattedDate = date ? date.toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'short', 
+                              day: 'numeric' 
+                            }) : dividend.date || 'N/A'
+                            
+                            return (
+                              <div
+                                key={idx}
+                                className="flex justify-between text-sm text-gray-700 dark:text-gray-300"
+                              >
+                                <span>{formattedDate}</span>
+                                <span className="font-semibold">
+                                  ${dividend.amount ? dividend.amount.toFixed(3) : 'N/A'}
+                                </span>
+                              </div>
+                            )
+                          })}
                         </div>
                       </div>
                     )}
